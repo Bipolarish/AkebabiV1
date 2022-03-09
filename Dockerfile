@@ -1,10 +1,10 @@
 FROM openjdk
-COPY target/demo-0.0.1-SNAPSHOT.jar /usr/app/ethiomekinaapp.jar
+COPY target/AkebabiV1-0.0.1-SNAPSHOT.jar /usr/app/akebabiapp.jar
 WORKDIR /usr/app
 EXPOSE 8080
 VOLUME /tmp
-RUN sh -c 'touch ethiomekinaapp.jar'
-ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "ethiomekinaapp.jar"]
+RUN sh -c 'touch akebabiapp.jar'
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "akebabiapp.jar"]
 #ENTRYPOINT ["java", "-Dspring.profiles.active=dev", "-jar", "ethiomekinaapp.jar"]
 #how to run
 #create docker file same as above

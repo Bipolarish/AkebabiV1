@@ -84,15 +84,16 @@ public class BusinessAccountServiceImpl implements BusinessAccountService{
 
         Optional<BusinessCategory> categoryById = businessCategoryRepo.findById(categoryId);
         if(!categoryById.isPresent()) {
-            throw new BadRequestException("Category can not found");
+            throw new BadRequestException("Category can not be found");
         }
         BusinessCategory category = categoryById.get();
         business.setCategory(category);
-        Optional<User> existingUserOptional = userRepo.findById(1);
+        Optional<User> existingUserOptional = userRepo.findByUserPublicId(posterPublicId);
         if(!existingUserOptional.isPresent()) {
-            throw new BadRequestException("User can not found");
+            throw new BadRequestException("User can not be found");
         }
-        business.setPostedBy(existingUserOptional.get());
+        User existingUser = existingUserOptional.get();
+        business.setPostedBy(existingUser);
         business.setBusinessPublicId(UUID.randomUUID().toString());
         return businessAccountRepo.save(business);
     }
