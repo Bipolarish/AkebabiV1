@@ -28,10 +28,11 @@ public class PasswordResetToken {
 
     public PasswordResetToken() {
     }
+
     public PasswordResetToken(User user) {
         this.user = user;
         createdDate = LocalDateTime.now();
-        token = UUID.randomUUID().toString();
+        token  = UUID.randomUUID().toString().substring(0, 6) + "-" + user.getUserName();
     }
 
     public User getUser() {
