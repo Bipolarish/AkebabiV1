@@ -31,8 +31,8 @@ public class UserPasswordResetController {
 
     @PostMapping("/forget_password")
     public ResponseEntity resetUserPassword(@RequestBody User user)throws Exception {
-        passwordResetService.updateResetPasswordToken(user.getUserName());
-        return new ResponseEntity ("We have sent a reset password code to your email Please check ", HttpStatus.OK);
+        String token = passwordResetService.updateResetPasswordToken(user.getUserName());
+        return new ResponseEntity ("We have sent a reset password code to your email Please check "+ token, HttpStatus.OK);
 
     }
     @PostMapping(value = "/checkPasswordToken")

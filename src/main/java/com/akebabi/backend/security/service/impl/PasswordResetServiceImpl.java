@@ -41,9 +41,9 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
 
     @Override
-    public void updateResetPasswordToken(String email) throws Exception {
+    public String updateResetPasswordToken(String email) throws Exception {
         User user = userRepo.findByUserName(email);
-
+        String token = null;
 
         if (user != null) {
             PasswordResetToken passwordResetToken = passwordTokenRepo.findByUserId(user.getId());
@@ -51,7 +51,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
              if( passwordResetToken == null){
                  passwordResetToken = new PasswordResetToken(user);
              }
-             String token = UUID.randomUUID().toString().substring(0, 6) + "-" + email;
+             token = UUID.randomUUID().toString().substring(0, 6) + "-" + email;
              passwordResetToken.setToken(token);
 
 
@@ -61,6 +61,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         } else {
             throw new UsernameNotFoundException("Could not find any customer with the email " + email);
         }
+        return token;
     }
 
     @Override

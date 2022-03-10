@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 public interface PasswordResetService {
 
-   void updateResetPasswordToken(String email) throws Exception;
+   String updateResetPasswordToken(String email) throws Exception;
    PasswordResetToken getByResetPasswordToken(String token);
    void resetPassword(User user, String newPassword);
    boolean isTokenExpired(final LocalDateTime tokenCreationDate);
