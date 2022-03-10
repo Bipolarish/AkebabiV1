@@ -31,32 +31,24 @@ public class UserPasswordResetController {
 
     @PostMapping("/forget_password")
     public ResponseEntity resetUserPassword(@RequestBody User user)throws Exception {
-                PasswordResetToken passwordResetToken = passwordTokenRepo.findByUserId(user.getId());
-                if(passwordResetToken!=null){
-                    passwordTokenRepo.delete(passwordResetToken);
-                    passwordResetService.updateResetPasswordToken(user.getUserName());
-                }
-                else{
-                    passwordResetService.updateResetPasswordToken(user.getUserName());
-                }
-                 return new ResponseEntity ("We have sent a reset password link to your email ", HttpStatus.OK);
+        passwordResetService.updateResetPasswordToken(user.getUserName());
+        return new ResponseEntity ("We have sent a reset password code to your email Please check ", HttpStatus.OK);
 
     }
     @PostMapping(value = "/checkPasswordToken")
     @Operation(description = "This API receive reset password  token as Parameter and update password.")
-    public ResponseEntity<String> checkPasswordToken(@RequestParam("token") String token ) throws Exception {
+    public ResponseEntity<String> checkPasswordToken(@RequestParam("token") String token)  throws Exception {
         PasswordResetToken userToken= passwordResetService.getByResetPasswordToken(token);
         if(userToken!=null) {
             if(passwordResetService.isTokenExpired(userToken.getCreatedDate())){
-
-                passwordTokenRepo.delete(userToken);
                 return new ResponseEntity (" Token is Expired ", HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity ("correct token", HttpStatus.OK);
+            if(!passwordResetService.isValidToken(token)){
+                return new ResponseEntity ("Incorrect token", HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity ("Correct Token", HttpStatus.OK);
         }
-        else{
             return new ResponseEntity ("not found", HttpStatus.NOT_FOUND);
-        }
     }
 
     @PostMapping(value = "/reset-password")
@@ -64,12 +56,12 @@ public class UserPasswordResetController {
     public ResponseEntity<String> processResetPassword(@RequestParam("token") String token , @RequestBody User newPassword) throws Exception {
 
         PasswordResetToken userToken = passwordResetService.getByResetPasswordToken(token);
-        if(userToken.getUser()!=null) {
+        if(userToken!=null && userToken.getUser()!=null) {
             User user = userRepo.findById(userToken.getUser().getId()).get();
             passwordResetService.resetPassword(user, newPassword.getPassWord());
             return new ResponseEntity("Reset Successfully ", HttpStatus.OK);
-            } else {
-                return new ResponseEntity("not found", HttpStatus.NOT_FOUND);
-            }
+        }
+        return new ResponseEntity("Token not found", HttpStatus.NOT_FOUND);
+
         }
     }

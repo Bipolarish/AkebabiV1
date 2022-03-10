@@ -4,7 +4,7 @@ import com.akebabi.backend.businesslogic.entities.BusinessInfo;
 import com.akebabi.backend.security.model.UserProfileModel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.*;
 
 import javax.persistence.*;
