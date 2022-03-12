@@ -21,7 +21,8 @@ public class SocialLinksServiceImpl implements SocialLinksService{
     @Override
     public Set<SocialLink> save(SocialLink socialLink, String businessPublicId) {
         BusinessInfo existingBusinessInfo = businessAccountService.getBusinessByBusinessPublicId(businessPublicId);
-        existingBusinessInfo.getSocialLinks().add(socialLink);
+        SocialLink newSocialLink = socialLinksRepo.save(socialLink);
+        existingBusinessInfo.getSocialLinks().add(newSocialLink);
         BusinessInfo savedBusiness = businessAccountRepo.save(existingBusinessInfo);
         return savedBusiness.getSocialLinks();
     }
@@ -31,6 +32,7 @@ public class SocialLinksServiceImpl implements SocialLinksService{
         if(socialLink.getId()==null){
             throw new BadRequestException("Social link id is required");
         }
+        socialLink.setIntSocialLinkType(socialLink.getEnumSocialLinkType().getSocialLinkType());
         socialLinksRepo.save(socialLink);
         BusinessInfo businessesInfo = businessAccountService.getBusinessByBusinessPublicId(businessPublicId);
         return businessesInfo.getSocialLinks();

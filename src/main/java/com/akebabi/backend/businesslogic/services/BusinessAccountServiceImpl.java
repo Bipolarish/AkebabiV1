@@ -29,42 +29,46 @@ public class BusinessAccountServiceImpl implements BusinessAccountService{
     @Override
     public Map<String, String> isBusinessValid(BusinessInfo businessDetail, String pid) {
         Map<String, String> errors = new HashMap<>();
-        List<BusinessInfo> existingBusinessByProfileUrlName = businessAccountRepo.findAllByProfileUrlNameIgnoreCase(businessDetail.getProfileUrlName());
-        List<BusinessInfo> existingBusinessByEmail = businessAccountRepo.findAllByEmailIgnoreCase(businessDetail.getEmail());
-        List<BusinessInfo> existingBusinessByPhone = businessAccountRepo.findAllByPrimaryPhoneIgnoreCase(businessDetail.getPrimaryPhone());
+
+        if(businessDetail.getProfileUrlName()==null || "".equals(businessDetail.getProfileUrlName()) || businessDetail.getProfileUrlName().split(" ").length>1) {
+            errors.put("Profile_URL_Name_Check_Failed","Profile URL Name should be single word");
+        }
+
+        List<BusinessInfo> matchingExistingBusinessByProfileUrlName = businessAccountRepo.findAllByProfileUrlNameIgnoreCase(businessDetail.getProfileUrlName());
+        List<BusinessInfo> matchingExistingBusinessByEmail = businessAccountRepo.findAllByEmailIgnoreCase(businessDetail.getEmail());
+        List<BusinessInfo> matchingExistingBusinessByPhone = businessAccountRepo.findAllByPrimaryPhoneIgnoreCase(businessDetail.getPrimaryPhone());
         //new save check
         if(businessDetail.getId() == null ){
-            if(!existingBusinessByProfileUrlName.isEmpty() ) {
-                errors.put("Profile_Name_Check","Profile Url Name is used");
+            if(!matchingExistingBusinessByProfileUrlName.isEmpty() ) {
+                errors.put("Profile_Name_Check_Failed","Profile Url Name is used by another user");
             }
 
-            if(!existingBusinessByEmail.isEmpty()) {
-                errors.put("Email_Check","Email is used");
+            if(!matchingExistingBusinessByEmail.isEmpty()) {
+                errors.put("Email_Check_Failed","Email is used by another user");
             }
-            if(!existingBusinessByPhone.isEmpty()) {
-                errors.put("Phone_Check","Phone is used");
+            if(!matchingExistingBusinessByPhone.isEmpty()) {
+                errors.put("Phone_Check_Failed","Phone is used by another user");
             }
         } else {
-//            if(!existingBusinessByProfileUrlName.isEmpty()) {
-//                boolean profileNameNoMatchFound = existingBusinessByProfileUrlName.stream().map(businessInfo -> businessInfo.getPostedBy().getUserPublicId()).noneMatch(expid -> expid.equalsIgnoreCase(pid));
-//                if(profileNameNoMatchFound) {
-//                    errors.put("Profile_Name_Check","Profile Url Name is used");
-//                }
-//            }
-//            if(!existingBusinessByEmail.isEmpty()) {
-//                boolean emailNoMatchFound = existingBusinessByEmail.stream().map(businessInfo -> businessInfo.getPostedBy().getUserPublicId()).noneMatch(expid -> expid.equalsIgnoreCase(pid));
-//                if(emailNoMatchFound) {
-//                    errors.put("Email_Check","Email is used");
-//                }
-//            }
-//            if(!existingBusinessByPhone.isEmpty()) {
-//                boolean phoneNoMatchFound = existingBusinessByPhone.stream().map(businessInfo -> businessInfo.getPostedBy().getUserPublicId()).noneMatch(expid -> expid.equalsIgnoreCase(pid));
-//                if(phoneNoMatchFound) {
-//                    errors.put("Phone_Check","Phone is used");
-//                }
-//            }
+            if(!matchingExistingBusinessByProfileUrlName.isEmpty()) {
+                boolean isDifferentUserUsingProfileName = matchingExistingBusinessByProfileUrlName.stream().map(businessInfo -> businessInfo.getPostedBy().getUserPublicId()).noneMatch(expid -> expid.equalsIgnoreCase(pid));
+                if(isDifferentUserUsingProfileName) {
+                    errors.put("Profile_Name_Check_Failed","Profile Url Name is used by another user");
+                }
+            }
+            if(!matchingExistingBusinessByEmail.isEmpty()) {
+                boolean isDifferentUserUsingEmail = matchingExistingBusinessByEmail.stream().map(businessInfo -> businessInfo.getPostedBy().getUserPublicId()).noneMatch(expid -> expid.equalsIgnoreCase(pid));
+                if(isDifferentUserUsingEmail) {
+                    errors.put("Email_Check_Failed","Email is used by another user");
+                }
+            }
+            if(!matchingExistingBusinessByPhone.isEmpty()) {
+                boolean isDifferentUserUsingPhone = matchingExistingBusinessByPhone.stream().map(businessInfo -> businessInfo.getPostedBy().getUserPublicId()).noneMatch(expid -> expid.equalsIgnoreCase(pid));
+                if(isDifferentUserUsingPhone) {
+                    errors.put("Phone_Check_Failed","Phone is used by another user");
+                }
+            }
 
-//            businessAccountRepo.findAllByPostedBy()
         }
 
         return errors;

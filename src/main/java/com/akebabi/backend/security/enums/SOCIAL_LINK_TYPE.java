@@ -3,7 +3,7 @@ package com.akebabi.backend.security.enums;
 import java.util.stream.Stream;
 
 public enum SOCIAL_LINK_TYPE {
-    FACE_BOOK(1),TWITTER(2),YOUTUBE(3),INSTAGRAM(4),MEDIUM(5),TELEGRAM(6),WHATSUP(7),TIKTOK(8);
+    NON(0), FACE_BOOK(1),TWITTER(2),YOUTUBE(3),INSTAGRAM(4),MEDIUM(5),TELEGRAM(6),WHATSUP(7),TIKTOK(8);
     private int socialLinkType;
 
     private SOCIAL_LINK_TYPE(int socialLinkType) {

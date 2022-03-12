@@ -106,7 +106,7 @@ public class AccountController {
         return businessAccountService.getBusinessesList(pageable);
     }
 
-    @GetMapping("/public/update-business-category/{businessPublicId}/{categoryId}")
+    @GetMapping("/secure/update-business-category/{businessPublicId}/{categoryId}")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(description = "This API is for updating business category")
     ResponseEntity<BusinessInfo> updateBusinessCategory(@PathVariable(required = true) String businessPublicId, @PathVariable(required = true) Integer categoryId) {
@@ -121,7 +121,7 @@ public class AccountController {
                                                             @PathVariable(required = true) String businessPublicId) throws Exception {
         Set<SocialLink> socialLinks = socialLinksService.save(socialLink, businessPublicId);
 
-        return new ResponseEntity(socialLinks, HttpStatus.NO_CONTENT);
+        return new ResponseEntity(socialLinks, HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/secure/update-business-socialLink/{businessPublicId}")
@@ -131,12 +131,12 @@ public class AccountController {
                                                             @PathVariable(required = true) String businessPublicId) throws Exception {
         Set<SocialLink> socialLinks = socialLinksService.update(socialLink, businessPublicId);
 
-        return new ResponseEntity(socialLinks, HttpStatus.NO_CONTENT);
+        return new ResponseEntity(socialLinks, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/secure/delete-business-socialLink/{businessPublicId}/{socialLinkId}")
-    @Operation(description = "This API for updating social link.")
-    ResponseEntity<Set<SocialLink>> updateBusinessSocialLinks(@Parameter(description = "Business's Social link Information")
+    @DeleteMapping(value = "/secure/delete-business-socialLink/{businessPublicId}/{socialLinkId}")
+    @Operation(description = "This API for deleting social link.")
+    ResponseEntity<Set<SocialLink>> deleteBusinessSocialLinks(@Parameter(description = "Business's Social link Information")
                                                               @PathVariable(required = true) String businessPublicId,
                                                               @PathVariable(required = true) Integer socialLinkId) throws Exception {
         Set<SocialLink> socialLinks = socialLinksService.delete(socialLinkId,businessPublicId);
