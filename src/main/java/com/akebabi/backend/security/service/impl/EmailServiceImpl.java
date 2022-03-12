@@ -1,6 +1,7 @@
 package com.akebabi.backend.security.service.impl;
 
 import com.akebabi.backend.security.entity.User;
+import com.akebabi.backend.security.model.UserPasswordRestModel;
 import com.akebabi.backend.security.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -35,16 +36,21 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public String sendEmailForPasswordReset(User user) throws Exception {
+    public String sendEmailForPasswordReset(String token) throws Exception {
+        String [] tokenSplit = token.split("-");
+        UserPasswordRestModel userPasswordRestModel= new UserPasswordRestModel() ;
+        userPasswordRestModel.setPasswordToken(tokenSplit[0]);
+        userPasswordRestModel.setUserName(tokenSplit[1]);
 
         Context context = new Context();
-        context.setVariable("user", user);
+
+        context.setVariable("userPasswordRestModel", userPasswordRestModel);
         String process = templateEngine.process("emails/resetPassword",context);
         javax.mail.internet.MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-        mimeMessageHelper.setSubject("Here's the link to reset your password");
+        mimeMessageHelper.setSubject("Here's the code to reset your password");
         mimeMessageHelper.setText(process, true);
-        mimeMessageHelper.setTo((user.getUserName()));
+        mimeMessageHelper.setTo(userPasswordRestModel.getUserName());
 
         javaMailSender.send(mimeMessage);
         return "sent";
