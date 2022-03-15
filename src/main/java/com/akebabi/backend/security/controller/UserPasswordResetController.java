@@ -35,9 +35,9 @@ public class UserPasswordResetController {
         return new ResponseEntity ("We have sent a reset password code to your email Please check "+ token, HttpStatus.OK);
 
     }
-    @PostMapping(value = "/checkPasswordToken")
+    @GetMapping(value = "/checkPasswordToken")
     @Operation(description = "This API receive reset password  token as Parameter and update password.")
-    public ResponseEntity<String> checkPasswordToken(@RequestParam("token") String token)  throws Exception {
+        public ResponseEntity<String> checkPasswordToken(@RequestParam("token") String token)  throws Exception {
         PasswordResetToken userToken= passwordResetService.getByResetPasswordToken(token);
         if(userToken!=null) {
             if(passwordResetService.isTokenExpired(userToken.getCreatedDate())){

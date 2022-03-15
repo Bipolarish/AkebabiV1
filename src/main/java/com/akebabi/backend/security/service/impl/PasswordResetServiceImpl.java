@@ -53,8 +53,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
              }
              token = UUID.randomUUID().toString().substring(0, 6) + "-" + email;
              passwordResetToken.setToken(token);
-
-
+            passwordResetToken.setCreatedDate(LocalDateTime.now());
             passwordTokenRepo.save(passwordResetToken);
             emailService.sendEmailForPasswordReset(token);
 
