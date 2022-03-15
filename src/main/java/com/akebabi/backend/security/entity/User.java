@@ -53,11 +53,6 @@ public class User {
     @OneToMany(mappedBy="postedBy",cascade = CascadeType.ALL)
     private List<BusinessInfo> businesses;
 
-//    @OneToMany(fetch =FetchType.LAZY, mappedBy = "postedBy")
-////    @JsonBackReference(value = "user-car-back-reference")
-////    @JsonManagedReference(value = "user-car-back-reference")
-//    private List<Car> postCars;
-
     public User fromUserProfile(UserProfileModel userProfileModel){
         return this.builder()
                 .userName(userProfileModel.getEmail())
