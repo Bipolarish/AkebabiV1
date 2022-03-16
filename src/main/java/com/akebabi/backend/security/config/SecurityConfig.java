@@ -31,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/css/**","/js/**","/","/webjars/**","/login","/publicinfo","/contactus","/forgetPassword"//unused
 //            "/user/**","/user/verify","/user/updatePassword"
             ,"/aboutus","/public/**","/h2-console/**","/car/pageInfo","/v3/api-docs/**","/swagger-ui.html",
-            "/swagger-ui/**","/email","/email/**","/account/public/**" //used
+            "/swagger-ui/**","/email","/email/**","/account/public/**","/category/public/**" //used
 //            ,"user/resource"
     };
 
