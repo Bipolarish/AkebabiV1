@@ -1,10 +1,12 @@
 package com.akebabi.backend.businesslogic.controllers;
 
 import com.akebabi.backend.businesslogic.entities.BusinessInfo;
+import com.akebabi.backend.businesslogic.entities.OpenHours;
 import com.akebabi.backend.businesslogic.entities.SocialLink;
 import com.akebabi.backend.businesslogic.exception.BadRequestException;
 import com.akebabi.backend.businesslogic.services.BusinessAccountService;
 import com.akebabi.backend.businesslogic.services.BusinessCategoryService;
+import com.akebabi.backend.businesslogic.services.OpenHoursService;
 import com.akebabi.backend.businesslogic.services.SocialLinksService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,6 +36,8 @@ public class AccountController {
     BusinessCategoryService businessCategoryService;
     @Autowired
     SocialLinksService socialLinksService;
+    @Autowired
+    OpenHoursService openHoursService;
 
     @PostMapping(value = "/secure/create-business-account/{categoryId}", consumes = {"application/json"})
     @Operation(description = "This API receive Business's Information and then Create New Business detail and return saved new business profile.")
@@ -142,5 +146,30 @@ public class AccountController {
         Set<SocialLink> socialLinks = socialLinksService.delete(socialLinkId,businessPublicId);
 
         return new ResponseEntity(socialLinks, HttpStatus.NO_CONTENT);
+    }
+    @PostMapping(value = "/secure/save-business-openHours/{businessPublicId}/{openHoursId}")
+    @Operation(description = "This API is for saving Open hours.")
+    ResponseEntity<Set<OpenHours>> saveBusinessOpenHours(@Parameter(description = "Business's Open hours Imformation")
+                                                         @RequestBody OpenHours openHours,
+                                                         @PathVariable(required = true) String businessPublicId) throws Exception {
+        Set<OpenHours> openHours1= openHoursService.save(openHours, businessPublicId);
+        return new ResponseEntity(openHours1, HttpStatus.NO_CONTENT);
+    }
+    @PostMapping(value = "/secure/update-business-openHour/{businessPublicId")
+    @Operation(description = "This API is for updating Open hours")
+    ResponseEntity<Set<OpenHours>> updateBusinessOpenHours(@Parameter(description = "Business's Social link Information")
+                                                           @RequestBody OpenHours openHour,
+                                                           @PathVariable(required = true) String businessPublicId) throws Exception {
+        Set<OpenHours> openHours = openHoursService.update(openHour, businessPublicId);
+        return new ResponseEntity(openHours, HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping(value = "/secure/delete-business-openHour/{businessPublicId}/{openHoursId")
+    @Operation(description = "This Api is for deleting Open hours. ")
+    ResponseEntity<Set<OpenHours>> deleteBusinessOpenHours(@Parameter(description = "Business's Open hours Information")
+                                                           @PathVariable(required = true) String businessPublicId,
+                                                           @PathVariable(required = true) Integer openHourId) throws Exception {
+        Set<OpenHours> openHours = openHoursService.delete(openHourId, businessPublicId);
+        return new ResponseEntity(openHours, HttpStatus.NO_CONTENT);
     }
 }
